@@ -11,7 +11,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import Link from "next/link";
-import { createUserAction } from "@/actions/auth.actions";
+import { signUpAction } from "@/actions/auth.actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -23,7 +23,7 @@ const Signup = () => {
     e.preventDefault();
     setIsSigninigUp(true)
     const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const res = await createUserAction(formData);
+    const res = await signUpAction(formData);
     if (res.error || !res.success) {
       console.log(res.error);
       toast.toast({
