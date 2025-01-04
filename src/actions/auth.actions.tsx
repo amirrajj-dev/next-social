@@ -68,3 +68,22 @@ export const createUserAction = async (formdata : FormData) => {
         return { message: 'Error creating user', success: false, error: plainError }
     }
 }
+
+export const getCurrentUserAction = async ()=>{
+    try {
+        await connectToDb()
+        const cookiesStore = await cookies()
+        const token = cookiesStore.get('next-social-token')?.value as string
+        if (!token) {
+            return { success: false, message: 'No token found' }
+        }
+        const decodedToken = await jwt.verify(token , process.env.SECRET_KEY)
+        const user = await usersModel.findOne({ email: decodedToken.email } , 'fullname email img')
+        if (!user){
+            return { success: false, message: 'User not found' }
+        }
+        return { success: true, data : user }
+    } catch (error) {
+        return { message : 'error getting current user' , success: false, error: error }
+    }
+}

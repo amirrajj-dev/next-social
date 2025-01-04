@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import React from "react";
 import { Bell, Home, User, Menu } from "lucide-react";
@@ -12,9 +11,11 @@ import {
   NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
 import { Button } from "./ui/button";
+import { getCurrentUserAction } from "@/actions/auth.actions";
 
-const Navbar = () => {
-  const isLogin = false;
+const Navbar = async () => {
+  const user = (await getCurrentUserAction()).data;
+  console.log(user);
   return (
     <div className="sticky top-0 bg-white dark:bg-neutral-900 p-4 flex items-center justify-between border-b border-b-neutral-900 dark:border-b-neutral-50">
       <div className="text-black dark:text-neutral-200 text-2xl sm:text-3xl font-bold">
@@ -31,7 +32,7 @@ const Navbar = () => {
           <Home size={20} className="-translate-y-px" />
           <span>Home</span>
         </Link>
-        {isLogin ? (
+        {user ? (
           <>
             <Link
               href={""}
@@ -48,10 +49,8 @@ const Navbar = () => {
               <span>Profile</span>
             </Link>
             <Image
-              src={
-                "https://secure.gravatar.com/avatar/7e1b956494f6b76cbda6b2625e179e28?s=96&d=mm&r=g"
-              }
-              alt="profile pic"
+              src={user.img}
+              alt={`${user?.fullname} profile`}
               width={40}
               height={40}
               className="rounded-full"
@@ -79,7 +78,7 @@ const Navbar = () => {
                 <Menu />
               </NavigationMenuTrigger>
               <NavigationMenuContent className="flex flex-col gap-3 items-center justify-center p-4">
-                {isLogin ? (
+                {user ? (
                   <>
                     <Link
                       href={""}
@@ -103,10 +102,8 @@ const Navbar = () => {
                       <span>Profile</span>
                     </Link>
                     <Image
-                      src={
-                        "https://secure.gravatar.com/avatar/7e1b956494f6b76cbda6b2625e179e28?s=96&d=mm&r=g"
-                      }
-                      alt="profile pic"
+                      src={user.img}
+                      alt={`${user?.fullname} profile`}
                       width={40}
                       height={40}
                       className="rounded-full"
@@ -121,14 +118,14 @@ const Navbar = () => {
                       <Home size={20} className="-translate-y-px" />
                       <span>Home</span>
                     </Link>
-                   <div className="flex items-center gap-3">
-                   <Link href={"signup"}>
-                      <Button>Sign Up</Button>
-                    </Link>
-                    <Link href={"signin"}>
-                      <Button>Sign In</Button>
-                    </Link>
-                   </div>
+                    <div className="flex items-center gap-3">
+                      <Link href={"signup"}>
+                        <Button>Sign Up</Button>
+                      </Link>
+                      <Link href={"signin"}>
+                        <Button>Sign In</Button>
+                      </Link>
+                    </div>
                   </div>
                 )}
               </NavigationMenuContent>
