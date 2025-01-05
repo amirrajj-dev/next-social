@@ -1,6 +1,6 @@
-import Image from "next/image";
-import React from "react";
-import { Bell, Home, User, Menu } from "lucide-react";
+"use client";
+import React, { useEffect, useState } from "react";
+import { Bell, Home, User, Menu, LogOut } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import {
@@ -10,11 +10,53 @@ import {
   NavigationMenuTrigger,
   NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
-import { getCurrentUserAction } from "@/actions/auth.actions";
+import { getCurrentUserAction, signOutAction } from "@/actions/auth.actions";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
-const Navbar = async () => {
-  const user = (await getCurrentUserAction()).data;
+interface User {
+  fullname: string;
+  email: string;
+  img: string;
+}
+
+const Navbar = () => {
+  const [user, setUser] = useState<User>({
+    fullname: "",
+    email: "",
+    img: "",
+  });
+
+  const router = useRouter()
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const user = await getCurrentUserAction();
+      setUser(user.data);
+    };
+    getCurrentUser();
+  }, []);
+
+  const handleLogOut = async () => {
+    const isSure = confirm("are you sure you want to log out ?");
+    if (isSure) {
+      const res = await signOutAction();
+      if (res.success) {
+        toast({
+          title: "Logged out successfully",
+          className: "bg-emerald-600",
+        });
+        router.replace('/signin')
+      } else {
+        toast({
+          title: "Failed to log out",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   return (
     <div className="sticky top-0 bg-white dark:bg-neutral-900 p-4 flex items-center justify-between border-b border-b-neutral-900 dark:border-b-neutral-50">
@@ -48,13 +90,29 @@ const Navbar = async () => {
               <User size={20} className="-translate-y-px" />
               <span>Profile</span>
             </Link>
-            <Image
-              src={user.img}
-              alt={`${user?.fullname} profile`}
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent bg-opacity-0 hover:bg-opacity-0 bg-cover hover:bg-transparent focus:bg-transparent focus:bg-none focus:bg-opacity-0">
+                    <Avatar>
+                      <AvatarImage
+                        src={`${user.img || "https://github.com/shadcn.png"}`}
+                        alt="@shadcn"
+                      />
+                      <AvatarFallback>
+                        {user?.fullname?.slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <Button onClick={handleLogOut}>
+                      <span>Sign Out</span>
+                      <LogOut />
+                    </Button>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </>
         ) : (
           <div className="flex items-center justify-center gap-3">
@@ -101,13 +159,19 @@ const Navbar = async () => {
                       <User size={20} className="-translate-y-px" />
                       <span>Profile</span>
                     </Link>
-                    <Image
-                      src={user.img}
-                      alt={`${user?.fullname} profile`}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
+                    <Avatar>
+                      <AvatarImage
+                        src={`${user.img || "https://github.com/shadcn.png"}`}
+                        alt="@shadcn"
+                      />
+                      <AvatarFallback>
+                        {user?.fullname?.slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <Button onClick={handleLogOut}>
+                      <span>Sign Out</span>
+                      <LogOut />
+                    </Button>
                   </>
                 ) : (
                   <div className="flex flex-col items-center justify-center gap-3">

@@ -149,7 +149,7 @@ export const getCurrentUserAction = async () => {
     if (!user) {
       return { success: false, message: "User not found" };
     }
-    return { success: true, data: user };
+    return { success: true, data: JSON.parse(JSON.stringify(user)) };
   } catch (error) {
     return {
       message: "error getting current user",
@@ -197,3 +197,15 @@ export const refreshTokenAction = async () => {
       return { message: "Error refreshing token", error };
     }
   };  
+
+  export const signOutAction = async ()=>{
+    try {
+      await  connectToDb()
+      const cookiesStore = await cookies();
+      cookiesStore.delete("next-social-token")
+      cookiesStore.delete("next-social-refresh-token")
+      return { success: true , message : 'logged  out succesfully' }
+    } catch (error) {
+      return { message: "Error signing out", error }
+    }
+  }
