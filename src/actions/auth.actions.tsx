@@ -137,11 +137,34 @@ export const getCurrentUserAction = async () => {
   try {
     await connectToDb();
     const cookiesStore = await cookies();
-    const token = cookiesStore.get("next-social-token")?.value as string;
+    let token = cookiesStore.get("next-social-token")?.value as string;
+    const refreshToken = cookiesStore.get("next-social-refresh-token")?.value;
+
     if (!token) {
       return { success: false, message: "No token found" };
     }
-    const decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+
+    let decodedToken;
+    try {
+      decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+    } catch (error) {
+      // Token is expired so we use refresh token
+      if (refreshToken) {
+        const newToken = await refreshTokenAction();
+        if (!newToken.success) {
+          return { success: false, message: "Failed to refresh token" };
+        }
+        if (typeof newToken.accessToken === "string") {
+          token = newToken.accessToken;
+          decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+        } else {
+          return { success: false, message: "Invalid access token format" };
+        }
+      } else {
+        return { success: false, message: "No refresh token found" };
+      }
+    }
+
     const user = await usersModel.findOne(
       { email: decodedToken.email },
       "fullname email img"
