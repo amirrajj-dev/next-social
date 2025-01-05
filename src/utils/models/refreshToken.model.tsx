@@ -7,4 +7,4 @@ const schema = new mongoose.Schema({
   expiryDate: { type: Date, required: true },
 });
 
-export const refreshTokenModel = mongoose.model('refreshtoken', schema);
+export const refreshTokenModel = mongoose.models.refreshtoken || mongoose.model('refreshtoken', schema);

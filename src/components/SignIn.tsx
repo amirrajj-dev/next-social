@@ -1,38 +1,79 @@
-import React from "react";
+'use client'
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { signInAction, refreshTokenAction } from '@/actions/auth.actions';
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
+  const toast = useToast()
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const res = await signInAction(formData);
+    console.log(res);
+    
+    if (res.success) {
+      toast.toast({
+        title: "Signed in Successfully",
+        description: "Hi again !",
+        className: "bg-emerald-600",
+      });
+      setTimeout(() => {
+        router.replace('/')
+      }, 5000);
+    } else {
+      toast.toast({
+        title: 'Error Signing you in',
+        description: 'Try again later',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  useEffect(() => {
+    const refreshToken = async () => {
+      const res = await refreshTokenAction();
+      if (res.success) {
+        console.log("Token refreshed successfully");
+      } else {
+        console.log("Failed to refresh token");
+      }
+    };
+
+    const interval = setInterval(refreshToken, 1000 * 60 * 55); // Refresh token every 55 minutes
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-neutral-900 p-2">
       <Card className="w-full max-w-md p-4 rounded-lg shadow-lg bg-white dark:bg-neutral-800">
         <CardHeader className="text-center">
           <h2 className="mb-7 text-3xl text-gray-900 dark:text-white">Next-Social</h2>
-          <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-            Log In
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Log In</CardTitle>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <Label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email
-              </Label>
+              <Label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</Label>
               <Input
                 id="email"
                 type="email"
+                name="email"
                 className="mt-1 block w-full p-2 border rounded-md shadow-sm focus:ring focus:ring-opacity-50"
               />
             </div>
             <div className="mb-4">
-              <Label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Password
-              </Label>
+              <Label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</Label>
               <Input
                 id="password"
                 type="password"
+                name="password"
                 className="mt-1 block w-full p-2 border rounded-md shadow-sm focus:ring focus:ring-opacity-50"
               />
             </div>

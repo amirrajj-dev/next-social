@@ -15,7 +15,7 @@ import { getCurrentUserAction } from "@/actions/auth.actions";
 
 const Navbar = async () => {
   const user = (await getCurrentUserAction()).data;
-  console.log(user);
+
   return (
     <div className="sticky top-0 bg-white dark:bg-neutral-900 p-4 flex items-center justify-between border-b border-b-neutral-900 dark:border-b-neutral-50">
       <div className="text-black dark:text-neutral-200 text-2xl sm:text-3xl font-bold">

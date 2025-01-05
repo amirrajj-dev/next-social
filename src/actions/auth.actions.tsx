@@ -88,10 +88,18 @@ export const signInAction = async (formdata: FormData) => {
     const entries = Object.fromEntries(formdata);
     const email = entries.email as string;
     const password = entries.password as string;
+    
     const user = await usersModel.findOne({ email });
     if (!user) {
       return { message: "User not found", success: false };
     }
+
+    //check if password is valid
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return { message: "Invalid password", success: false };
+    }
+
     const token = await jwt.sign({ email }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
@@ -106,7 +114,7 @@ export const signInAction = async (formdata: FormData) => {
 
     //handling users refresh token
     const refreshToken = await generateRefreshToken(user._id);
-    cookiesStore.set("refresh-token", refreshToken.token, {
+    cookiesStore.set("next-social-refresh-token", refreshToken.token, {
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 30, // 30 days
       path: "/",
@@ -155,7 +163,7 @@ export const refreshTokenAction = async () => {
     try {
       await connectToDb();
       const cookiesStore = await cookies();
-      const token = cookiesStore.get("refresh-token")?.value;
+      const token = cookiesStore.get("next-social-refresh-token")?.value;
       if (!token) {
         return ({ message: "No refresh token found" , success: false});
       }
@@ -176,7 +184,7 @@ export const refreshTokenAction = async () => {
         sameSite: "strict",
         secure: true,
       });
-      cookiesStore.set("refresh-token", newRefreshToken.token, {
+      cookiesStore.set("next-social-refresh-token", newRefreshToken.token, {
         httpOnly: true,
         maxAge: 60 * 60 * 24 * 30, // 30 days
         path: "/",
