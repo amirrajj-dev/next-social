@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { signInAction, refreshTokenAction } from '@/actions/auth.actions';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const SignIn = () => {
   const toast = useToast()
@@ -54,7 +55,7 @@ const SignIn = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-neutral-900 p-2">
       <Card className="w-full max-w-md p-4 rounded-lg shadow-lg bg-white dark:bg-neutral-800">
         <CardHeader className="text-center">
-          <h2 className="mb-7 text-3xl text-gray-900 dark:text-white">Next-Social</h2>
+          <Link href={'/'} className="mb-7 text-3xl text-gray-900 dark:text-white">Next-Social</Link>
           <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Log In</CardTitle>
         </CardHeader>
         <CardContent>

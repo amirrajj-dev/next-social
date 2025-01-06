@@ -135,7 +135,7 @@ const Navbar = () => {
               <NavigationMenuTrigger>
                 <Menu />
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="flex flex-col gap-3 items-center justify-center p-4">
+              <NavigationMenuContent className="flex flex-col gap-3 items-center justify-center p-4 z-50">
                 {user ? (
                   <>
                     <Link

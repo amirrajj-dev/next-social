@@ -169,7 +169,7 @@ export const getCurrentUserAction = async () => {
 
     const user = await usersModel.findOne(
       { email: decodedToken.email },
-      "fullname email img username"
+      "fullname email img username following followers bio location"
     );
     if (!user) {
       return { success: false, message: "User not found" };
