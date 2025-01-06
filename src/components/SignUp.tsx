@@ -73,6 +73,20 @@ const Signup = () => {
             </div>
             <div className="mb-4">
               <Label
+                htmlFor="fullname"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
+                UserName
+              </Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                className="mt-1 block w-full p-2 border rounded-md shadow-sm focus:ring focus:ring-opacity-50"
+              />
+            </div>
+            <div className="mb-4">
+              <Label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300"
               >

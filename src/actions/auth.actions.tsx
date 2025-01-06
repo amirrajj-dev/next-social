@@ -21,8 +21,9 @@ export const signUpAction = async (formdata: FormData) => {
     const email = entries.email as string;
     const password = entries.password as string;
     const gender = entries.gender as string;
+    const username = entries.username as string;
 
-    if (!fullname || !email || !password || !gender) {
+    if (!fullname || !email || !password || !gender || !username) {
       return { message: "Please fill all fields", success: false };
     }
 
@@ -60,6 +61,7 @@ export const signUpAction = async (formdata: FormData) => {
     // Adding user to database
     await usersModel.create({
       fullname,
+      username,
       email,
       gender,
       password: hashedPassword,
@@ -167,7 +169,7 @@ export const getCurrentUserAction = async () => {
 
     const user = await usersModel.findOne(
       { email: decodedToken.email },
-      "fullname email img"
+      "fullname email img username"
     );
     if (!user) {
       return { success: false, message: "User not found" };
