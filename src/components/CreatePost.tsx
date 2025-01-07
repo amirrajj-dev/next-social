@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -14,13 +13,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Image as ImageIcon, Send, X } from "lucide-react";
-import { Input } from "./ui/input";
+import { Input } from "@/components/ui/input";
+import { createPost } from "@/actions/post.actions";
+import { IUser } from "@/types/types";
+import { toast } from "@/hooks/use-toast";
 
 const CreatePost = () => {
-  const [user, setUser] = useState([]);
-  const [content, setContent] = useState("");
-  const [image, setImage] = useState("");
-  const [previewImg, setPreviewImg] = useState("");
+  const [user, setUser] = useState<IUser | null>(null);
+  const [content, setContent] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
+  const [previewImg, setPreviewImg] = useState<string>("");
+  const [isPosting , setIsPosting] = useState<boolean>(false)
 
   useEffect(() => {
     const getUser = async () => {
@@ -31,16 +34,60 @@ const CreatePost = () => {
   }, []);
 
   const handleChangeImg = (e: ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files[0]) return;
-    const imgUrl = URL.createObjectURL(e.target.files[0]);
-    setImage(e.target.files[0]);
+    if (!e.target.files || e.target.files.length === 0) return;
+    const imgFile = e.target.files[0];
+    const imgUrl = URL.createObjectURL(imgFile);
+    setImage(imgFile);
     setPreviewImg(imgUrl);
   };
 
-  const resetPostImg = ()=>{
-    setPreviewImg('');
-    setImage('')
-  }
+  const resetPostImg = () => {
+    setPreviewImg("");
+    setImage(null);
+  };
+
+  const handleSubmitPost = async () => {
+    setIsPosting(true)
+    if (!user){
+      toast({
+        title : 'you must be authenticated to create a new post',
+        variant : 'destructive'
+      })
+      setIsPosting(false)
+    }
+
+    if (!content){
+      toast({
+        title: 'Please fill all the fields',
+        variant : 'destructive'
+      })
+      setIsPosting(false)
+    }
+    
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("author", user!.fullname);
+    if (image) {
+      formData.append("image", image);
+    }
+    
+    const response = await createPost(formData);
+    if (response.success) {
+      setContent("");
+      resetPostImg();
+      toast({
+        title: "Post created successfully",
+        description: "Your post has been created successfully",
+        className : 'bg-emerald-500'
+      })
+      setIsPosting(false)
+    } else {
+      toast({
+        title : response.message || "Failed to create post.",
+        variant : 'destructive'
+      })
+    }
+  };
 
   return (
     <div>
@@ -69,7 +116,7 @@ const CreatePost = () => {
                 alt="preview post image"
                 className="rounded-md shadow-md"
               />
-              <X onClick={resetPostImg} className="text-neutral-100  bg-neutral-900 rounded-md absolute top-4 right-4 animate-bounce cursor-pointer" size={24}  />
+              <X onClick={resetPostImg} className="text-neutral-100 bg-neutral-900 rounded-md absolute top-4 right-4 animate-bounce cursor-pointer" size={24} />
             </div>
           </CardContent>
         )}
@@ -87,8 +134,8 @@ const CreatePost = () => {
             />
           </Button>
 
-          <Button className=" text-sm">
-            <span>Post</span>
+          <Button onClick={handleSubmitPost} disabled={isPosting} className="text-sm">
+            <span>{isPosting ? 'Posting ...' : 'Post'}</span>
             <Send />
           </Button>
         </CardFooter>
