@@ -9,6 +9,7 @@ import jwt from "jsonwebtoken";
 import { connectToDb } from "@/utils/db/connectToDb";
 import { generateRefreshToken } from "@/utils/helper/generateRefreshToke";
 import { refreshTokenModel } from "@/utils/models/refreshToken.model";
+import { revalidatePath } from "next/cache";
 
 const boyImages = ["boy1.png", "boy2.png", "boy3.png"];
 const girlImages = ["girl.png", "girl2.png", "girl3.png"];
@@ -229,6 +230,7 @@ export const refreshTokenAction = async () => {
       const cookiesStore = await cookies();
       cookiesStore.delete("next-social-token")
       cookiesStore.delete("next-social-refresh-token")
+      revalidatePath('/')
       return { success: true , message : 'logged  out succesfully' }
     } catch (error) {
       return { message: "Error signing out", error }
