@@ -1,6 +1,7 @@
 import CreatePost from "@/components/CreatePost";
 import Navbar from "@/components/Navbar";
 import SideBarCard from "@/components/SideBarCard";
+import WhoToFollow from "@/components/WhoToFollow";
 import React from "react";
 
 const Page = () => {
@@ -12,13 +13,13 @@ const Page = () => {
           <div className="col-span-1 lg:col-span-3 rounded-lg shadow-md">
             <SideBarCard />
           </div>
-          <div className="col-span-1 lg:col-span-9 bg-white dark:bg-neutral-900 rounded-lg shadow-md">
-            <div className="grid grid-cols-1 md:grid-cols-12">
+          <div className="col-span-1 lg:col-span-9 rounded-lg shadow-md">
+            <div className="grid gap-3 grid-cols-1 md:grid-cols-12">
               <div className="col-span-12 md:col-span-8">
                 <CreatePost />
               </div>
               <div className="col-span-12 md:col-span-4">
-                ewwqe
+                <WhoToFollow/>
               </div>
             </div>
           </div>
