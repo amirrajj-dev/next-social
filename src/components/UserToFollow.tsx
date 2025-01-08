@@ -1,7 +1,6 @@
-// UserToFollow.tsx
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import UserToFollowBtn from "./UserToFollowBtn";
 
 interface UserToFollowProps {
   img: string;
@@ -24,7 +23,7 @@ const UserToFollow: React.FC<UserToFollowProps> = ({ img, fullname, username, fo
           <div className="text-xs text-neutral-500">{followers} followers</div>
         </div>
       </Link>
-      <Button className="ml-3">Follow</Button>
+      <UserToFollowBtn username={username} />
     </div>
   );
 };
