@@ -2,6 +2,7 @@
 
 import { connectToDb } from "@/utils/db/connectToDb";
 import { usersModel } from "@/utils/models/user.model";
+import { notificationModel } from "@/utils/models/notification.model";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { revalidatePath } from "next/cache";
@@ -108,6 +109,20 @@ export const followUnfollowUser = async (username: string) => {
         },
       }
     );
+
+    //handle sending notification to user which get followed
+    const newNotification = new notificationModel({
+      sender: user._id,
+      receiver: userToFollow._id,
+      type: "follow",
+      message: `${user.fullname} started following you`,
+    });
+    await newNotification.save();
+
+    //push the new notification in user who get followed notifications
+    userToFollow.notifications.push(newNotification._id)
+    await userToFollow.save();
+
     revalidatePath("/");
     return { message: "user followed succesfully", success: true };
   } catch (error) {
