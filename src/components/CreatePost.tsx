@@ -54,6 +54,7 @@ const CreatePost = () => {
         variant : 'destructive'
       })
       setIsPosting(false)
+      return;
     }
 
     if (!content){
@@ -62,6 +63,7 @@ const CreatePost = () => {
         variant : 'destructive'
       })
       setIsPosting(false)
+      return;
     }
     
     const formData = new FormData();
