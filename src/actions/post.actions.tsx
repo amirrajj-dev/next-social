@@ -9,7 +9,7 @@ import crypto from 'crypto';
 import { usersModel } from "@/utils/models/user.model";
 import { revalidatePath } from "next/cache";
 
-export const createPost = async (post: FormData) => {
+export const createPostAction = async (post: FormData) => {
     try {
         await connectToDb();
 
@@ -57,3 +57,13 @@ export const createPost = async (post: FormData) => {
         return { message: 'Error creating post', error: error, success: false };
     }
 };
+
+export const getAllPostsAction = async () => {
+    try {
+        await connectToDb()
+        const posts = await postModel.find({}).populate('author')
+        return { data : posts, success: true };
+    } catch (error) {
+        return { message: 'Error getting posts', error: error, success: false };
+    }
+}

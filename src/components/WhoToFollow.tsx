@@ -1,11 +1,11 @@
-import { getUsersToFollow } from "@/actions/user.action";
+import { getUsersToFollowAction } from "@/actions/user.action";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IUser } from "@/types/types";
 import UserToFollow from "./UserToFollow";
 import { getCurrentUserAction } from "@/actions/auth.actions";
 
 const WhoToFollow = async () => {
-  const usersToFollow: IUser[] = (await getUsersToFollow()).data as IUser[];
+  const usersToFollow: IUser[] = (await getUsersToFollowAction()).data as IUser[];
 
   const currentUser = (await getCurrentUserAction()).data;
 

@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 import { revalidatePath } from "next/cache";
 import { IUser } from "@/types/types";
 
-export const getUsersToFollow = async () => {
+export const getUsersToFollowAction = async () => {
   try {
     await connectToDb();
     const cookiesStore = await cookies();
@@ -49,7 +49,7 @@ export const getUsersToFollow = async () => {
 };
 
 
-export const followUnfollowUser = async (username: string) => {
+export const followUnfollowUserAction = async (username: string) => {
   try {
     await connectToDb();
     const cookiesStore = await cookies();

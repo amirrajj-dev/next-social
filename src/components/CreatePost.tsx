@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Image as ImageIcon, Send, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { createPost } from "@/actions/post.actions";
+import { createPostAction } from "@/actions/post.actions";
 import { IUser } from "@/types/types";
 import { toast } from "@/hooks/use-toast";
 
@@ -73,7 +73,7 @@ const CreatePost = () => {
       formData.append("image", image);
     }
     
-    const response = await createPost(formData);
+    const response = await createPostAction(formData);
     if (response.success) {
       setContent("");
       resetPostImg();
