@@ -24,13 +24,14 @@ export interface IUser {
 // Post Interface
 export interface IPost {
   content: string;
-  author: Types.ObjectId;
+  author: IUser;
   image?: string;
   likes: Types.ObjectId[];
   comments: Types.ObjectId[];
   notifications: Types.ObjectId[];
   likeCount?: number; // Virtual field
   commentCount?: number; // Virtual field
+  createdAt : Date
 }
 
 // Notification Interface
