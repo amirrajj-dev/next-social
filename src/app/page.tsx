@@ -1,5 +1,6 @@
 import CreatePost from "@/components/CreatePost";
 import Navbar from "@/components/Navbar";
+import Posts from "@/components/Posts";
 import SideBarCard from "@/components/SideBarCard";
 import WhoToFollow from "@/components/WhoToFollow";
 import React from "react";
@@ -17,6 +18,7 @@ const Page = () => {
             <div className="grid gap-3 grid-cols-1 md:grid-cols-12">
               <div className="col-span-12 md:col-span-8">
                 <CreatePost />
+                <Posts/>
               </div>
               <div className="col-span-12 md:col-span-4">
                 <WhoToFollow/>
