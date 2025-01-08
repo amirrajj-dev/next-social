@@ -15,19 +15,10 @@ import { Button } from "./ui/button";
 import { getCurrentUserAction, signOutAction } from "@/actions/auth.actions";
 import { toast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-
-interface User {
-  fullname: string;
-  email: string;
-  img: string;
-}
+import { IUser } from "@/types/types";
 
 const Navbar = () => {
-  const [user, setUser] = useState<User>({
-    fullname: "",
-    email: "",
-    img: "",
-  });
+  const [user, setUser] = useState<Partial<IUser>>({});
 
   const router = useRouter()
 
@@ -96,11 +87,11 @@ const Navbar = () => {
                   <NavigationMenuTrigger className="bg-transparent bg-opacity-0 hover:bg-opacity-0 bg-cover hover:bg-transparent focus:bg-transparent focus:bg-none focus:bg-opacity-0">
                     <Avatar>
                       <AvatarImage
-                        src={`${user.img || "https://github.com/shadcn.png"}`}
-                        alt="@shadcn"
+                        src={`${user.img}`}
+                        alt="user profile"
                       />
                       <AvatarFallback>
-                        {user?.fullname?.slice(0, 2)}
+                        {user!.fullname?.slice(0, 2)}
                       </AvatarFallback>
                     </Avatar>
                   </NavigationMenuTrigger>

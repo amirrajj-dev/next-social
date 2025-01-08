@@ -6,7 +6,7 @@ import { getCurrentUserAction } from "@/actions/auth.actions";
 
 const WhoToFollow = async () => {
   const usersToFollow: IUser[] = (await getUsersToFollow()).data as IUser[];
-  console.log(usersToFollow);
+
   const currentUser = (await getCurrentUserAction()).data;
 
   if (!currentUser) {

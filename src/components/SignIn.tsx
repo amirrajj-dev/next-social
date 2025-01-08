@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,12 +12,13 @@ import Link from "next/link";
 const SignIn = () => {
   const toast = useToast()
   const router = useRouter()
+  const [isSigningIn , setIsSigningIn] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setIsSigningIn(true)
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const res = await signInAction(formData);
-    console.log(res);
     
     if (res.success) {
       toast.toast({
@@ -28,12 +29,14 @@ const SignIn = () => {
       setTimeout(() => {
         router.replace('/')
       }, 5000);
+      setIsSigningIn(false)
     } else {
       toast.toast({
         title: 'Error Signing you in',
         description: 'Try again later',
         variant: 'destructive'
       });
+      setIsSigningIn(false)
     }
   };
 
@@ -56,7 +59,7 @@ const SignIn = () => {
       <Card className="w-full max-w-md p-4 rounded-lg shadow-lg bg-white dark:bg-neutral-800">
         <CardHeader className="text-center">
           <Link href={'/'} className="mb-7 text-3xl text-gray-900 dark:text-white">Next-Social</Link>
-          <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Log In</CardTitle>
+          <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Sign In</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
@@ -78,8 +81,8 @@ const SignIn = () => {
                 className="mt-1 block w-full p-2 border rounded-md shadow-sm focus:ring focus:ring-opacity-50"
               />
             </div>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md">
-              Log In
+            <Button disabled={isSigningIn} type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+              {isSigningIn ? 'Signing In ...' : ' SignIn'}
             </Button>
           </form>
         </CardContent>

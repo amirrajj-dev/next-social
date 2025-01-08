@@ -13,7 +13,7 @@ const Page = () => {
           <div className="col-span-1 lg:col-span-3 rounded-lg shadow-md">
             <SideBarCard />
           </div>
-          <div className="col-span-1 lg:col-span-9 rounded-lg shadow-md">
+          <div className="col-span-1 lg:col-span-9 rounded-lg">
             <div className="grid gap-3 grid-cols-1 md:grid-cols-12">
               <div className="col-span-12 md:col-span-8">
                 <CreatePost />
