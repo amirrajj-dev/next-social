@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import moment from "moment";
 import Image from "next/image";
 import { IUser, IPost } from "@/types/types";
-import { MessageCircle, Trash2, Heart } from "lucide-react";
+import { MessageCircle, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import PostLikeBtn from "./PostLikeBtn";
 
 const Post = ({
   post,
@@ -46,16 +47,14 @@ const Post = ({
             src={post.image}
             alt="Post image"
             className="rounded-md"
-            width={600} // Adjusted width based on your layout
-            height={400} // Adjusted height based on your layout
+            width={600}
+            height={400}
             layout="responsive"
           />
         )}
         <div className="mt-4 flex items-center justify-between">
           <div className="flex items-center space-x-10">
-            <button className="flex items-center dark:text-neutral-400 text-neutral-950 transition duration-200 hover:dark:text-red-500 hover:text-red-500 hover:scale-105">
-              <Heart className="mr-1 w-4 h-4 " /> {post.likeCount}
-            </button>
+           <PostLikeBtn likeCount={post.likeCount} postId={post._id.toString()} userId={post.author._id.toString()} currentUser={currentUser} />
             <button className="flex items-center dark:text-neutral-400 text-neutral-950 transition duration-200 hover:dark:text-blue-500 hover:text-blue-500 hover:scale-105">
               <MessageCircle className="mr-1 w-4 h-4" /> {post.commentCount}
             </button>
