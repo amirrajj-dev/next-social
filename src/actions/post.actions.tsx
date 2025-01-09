@@ -20,6 +20,8 @@ export const createPostAction = async (post: FormData) => {
         const author = entries.author as string;
         const image = entries.image as File;
 
+        const currentUser : IUser = (await getCurrentUserAction()).data
+
         if (!content || !author) {
             return { message: 'Each post should contain author and content', success: false };
         }
@@ -52,6 +54,11 @@ export const createPostAction = async (post: FormData) => {
 
         const newPost = new postModel(postObj);
         await newPost.save();
+        await usersModel.findOneAndUpdate({username : currentUser.username} , {
+            $push : {
+                posts : newPost._id
+            }
+        })
         revalidatePath('/')
 
         return { message: 'Post created successfully', success: true };
@@ -109,5 +116,35 @@ export const likeUnlikePostAction = async (postId : string , userId : string)=>{
         return { message: 'Post liked/unliked successfully', success: true };
     } catch (error) {
         return { message: 'Error liking/unliking post', error: error, success: false };
+    }
+}
+
+export const deletePostAction = async (postId : string)=>{
+    try {
+        await connectToDb()
+        const post : IPost = await postModel.findById(postId).exec()
+        const currentUser : IUser = (await getCurrentUserAction()).data
+        if(!post){
+            return { message: 'Post not found', success: false }
+        }
+        await postModel.findByIdAndDelete(postId)
+        //deleting the post from all users likes if it exists in their likes array
+        const users = await usersModel.find().exec()
+
+        users.forEach(user => {
+            if(user.likes.includes(postId)){
+                user.likes = user.likes.filter(like => like.toString() !== postId.toString())
+                user.save()
+            }
+        }) 
+
+        await usersModel.findOneAndUpdate({username : currentUser.username} , {
+            $pull: { posts: post._id }
+        })
+        
+        revalidatePath('/')
+        return { message: 'Post deleted successfully', success: true };
+    } catch (error) {
+        return { message: 'Error deleting post', error: error, success: false };
     }
 }
