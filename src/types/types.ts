@@ -23,6 +23,7 @@ export interface IUser {
 
 // Post Interface
 export interface IPost {
+  _id: mongoose.Types.ObjectId;
   content: string;
   author: IUser;
   image?: string;

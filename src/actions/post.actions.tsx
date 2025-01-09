@@ -8,6 +8,8 @@ import path from 'path';
 import crypto from 'crypto';
 import { usersModel } from "@/utils/models/user.model";
 import { revalidatePath } from "next/cache";
+import { getCurrentUserAction } from "./auth.actions";
+import { notificationModel } from "@/utils/models/notification.model";
 
 export const createPostAction = async (post: FormData) => {
     try {
@@ -65,5 +67,47 @@ export const getAllPostsAction = async () => {
         return { data : posts, success: true };
     } catch (error) {
         return { message: 'Error getting posts', error: error, success: false };
+    }
+}
+
+export const likeUnlikePostAction = async (postId : string , userId : string)=>{
+    try {
+        await connectToDb()
+        const post = await postModel.findById(postId).exec()
+        const userWhichPostgetsLiked = await usersModel.findById(userId).exec()
+        if(!post){
+            return { message: 'Post not found', success: false }
+        }
+        const currentuser = (await getCurrentUserAction()).data
+        if(!currentuser){
+            return { message: 'User not logged in', success: false }
+        }
+        const user = await usersModel.findById({_id : currentuser._id})
+
+        if(post.likes.includes(currentuser._id)){
+            post.likes = post.likes.filter(like => like.toString() !== currentuser._id.toString())
+            await post.save()
+            user.likes = user.likes.filter(like=>like.toString() !== post._id.toString())
+            await user.save()
+            
+            //sending notification to the user which post gets liked
+            const newNotification = new notificationModel({
+                sender: user._id,
+                receiver: userWhichPostgetsLiked._id,
+                type: "like",
+                message: `${currentuser.fullname} liked your post`,
+                post : post._id
+            });
+            await newNotification.save()
+        } else{
+            post.likes.push(currentuser._id)
+            await post.save()
+            user.likes.push(post._id)
+            await user.save()
+        }
+        revalidatePath('/')
+        return { message: 'Post liked/unliked successfully', success: true };
+    } catch (error) {
+        return { message: 'Error liking/unliking post', error: error, success: false };
     }
 }
