@@ -77,17 +77,59 @@ export const deleteCommentAction = async (commentId: string) => {
         success: false,
       };
     }
+
+    const users : IUser[] = await usersModel.find({})
+    users.forEach(user =>{
+        user.likes = user.likes.filter(like => like.toString()!== comment._id.toString())
+        user.save()
+    })
     await commentModel.findByIdAndDelete(commentId);
     await postModel.findByIdAndUpdate(comment.post.toString(), {
       $pull: { comments: comment._id },
     });
     await usersModel.findByIdAndUpdate(user._id, {
       $pull: { comments: comment._id },
-    });
+    }); 
+
+
+
     revalidatePath("/");
     return { message: "comment deleted successfully", success: true };
-    
+
   } catch (error) {
     return { message: "error deleting comment", error, success: false };
   }
 };
+
+
+export const likeUnlikeCommentAction = async (commentId : string)=>{
+    try {
+        await connectToDb()
+        const comment : IComment = (await commentModel.findById(commentId)) as IComment
+        if(!comment){
+            return { message: 'Comment not found', success: false }
+        }
+        const currentUser = (await getCurrentUserAction()).data
+        const user : IUser = await usersModel.findById(currentUser._id) as IUser
+        if (!user){
+            return { message: 'User not logged in', success: false }
+        }
+
+        if(comment.likes.includes(currentUser._id)){
+            comment.likes = comment.likes.filter(like => like.toString()!== currentUser._id.toString())
+            await comment.save()
+            user.likes = user.likes.filter(like=>like.toString()!== comment._id.toString())
+            await user.save()
+        } else {
+            comment.likes.push(currentUser._id)
+            await comment.save()
+            user.likes.push(comment._id)
+            await user.save()
+        }
+        revalidatePath("/")
+        return { message: 'Comment liked/unliked successfully', success: true }
+
+    } catch (error) {
+        return { message: 'Error liking/unliking comment', error, success: false }   
+    }
+}
