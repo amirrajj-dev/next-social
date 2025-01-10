@@ -70,7 +70,13 @@ export const createPostAction = async (post: FormData) => {
 export const getAllPostsAction = async () => {
     try {
         await connectToDb()
-        const posts = await postModel.find({}).populate('author' , 'fullname username img ').sort({_id : -1})
+        const posts = await postModel.find({}).populate('author' , 'fullname username img').populate({
+            path : 'comments',
+            populate : {
+                path : 'author',
+                select : 'username img fullname'
+            }
+        }).sort({_id : -1})
         return { data : posts, success: true };
     } catch (error) {
         return { message: 'Error getting posts', error: error, success: false };

@@ -6,8 +6,8 @@ import { IUser, IPost } from "@/types/types";
 import { MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import PostLikeBtn from "./PostLikeBtn";
-import PostDeleteBtn from "./PostDeleteBtn";
 import DeletePostModal from "./DeletePostModal";
+import CommentsModal from "./CommentsModal";
 
 const Post = ({
   post,
@@ -63,9 +63,9 @@ const Post = ({
               userId={post.author._id.toString()}
               currentUser={currentUser}
             />
-            <button className="flex items-center dark:text-neutral-400 text-neutral-950 transition duration-200 hover:dark:text-blue-500 hover:text-blue-500 hover:scale-105">
-              <MessageCircle className="mr-1 w-4 h-4" /> {post.commentCount}
-            </button>
+            <div className="flex items-center dark:text-neutral-400 text-neutral-950 transition duration-200 hover:dark:text-blue-500 hover:text-blue-500 hover:scale-105">
+              <CommentsModal postId={post._id.toString()} commentsCount={post.commentCount} currentUser={currentUser} comments={JSON.parse(JSON.stringify(post.comments))}/>
+            </div>
           </div>
           {String(currentUser?._id) === String(post.author?._id) && (
             <div className="absolute top-3 right-5">
