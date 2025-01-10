@@ -11,7 +11,11 @@ import { IComment, IUser } from "@/types/types";
 import { MessageCircle, Send, Heart, Trash, Reply } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { createCommentAction, deleteCommentAction } from "@/actions/comment.actions";
+import {
+  createCommentAction,
+  deleteCommentAction,
+  likeUnlikeCommentAction,
+} from "@/actions/comment.actions";
 import { toast } from "@/hooks/use-toast";
 
 const CommentsModal = ({
@@ -46,15 +50,27 @@ const CommentsModal = ({
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    const res = await deleteCommentAction(commentId)
-    if (res.success){
+    const res = await deleteCommentAction(commentId);
+    if (res.success) {
       toast({
         title: "Comment deleted successfully",
         className: "bg-emerald-600",
-      })
-    }else{
+      });
+    } else {
       toast({
         title: "Failed to delete comment",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleLikeUnlikeComment = async (commentId: string) => {
+    const res = await likeUnlikeCommentAction(commentId);
+    if (res.success) {
+      return;
+    } else {
+      toast({
+        title: "Failed to like/unlike comment",
         variant: "destructive",
       });
     }
@@ -63,7 +79,10 @@ const CommentsModal = ({
   return (
     <Dialog>
       <DialogTrigger className="flex items-center justify-center gap-1">
-        <MessageCircle className={`${commentsCount > 0 ? 'text-blue-500 fill-current' : ''}`} size={18} />
+        <MessageCircle
+          className={`${commentsCount > 0 ? "text-blue-500 fill-current" : ""}`}
+          size={18}
+        />
         {commentsCount}
       </DialogTrigger>
       <DialogContent>
@@ -72,7 +91,9 @@ const CommentsModal = ({
           <div className="flex gap-4 mb-4">
             <Avatar className="mt-6 w-10 h-10">
               <AvatarImage src={currentUser.img} alt={currentUser.username} />
-              <AvatarFallback>{currentUser.fullname.slice(0, 2)}</AvatarFallback>
+              <AvatarFallback>
+                {currentUser.fullname.slice(0, 2)}
+              </AvatarFallback>
             </Avatar>
             <div className="flex-1 flex flex-col gap-3 items-end">
               <Textarea
@@ -89,29 +110,64 @@ const CommentsModal = ({
           </div>
           {comments?.length > 0 ? (
             comments.map((comment, index) => (
-              <div key={index} className="flex gap-4 mb-4 p-4 border-b border-gray-300 relative">
+              <div
+                key={index}
+                className="flex gap-4 mb-4 p-4 border-b border-gray-300 relative"
+              >
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src={comment.author.img} alt={comment.author.username} />
-                  <AvatarFallback>{comment.author.fullname.slice(0, 2)}</AvatarFallback>
+                  <AvatarImage
+                    src={comment.author.img}
+                    alt={comment.author.username}
+                  />
+                  <AvatarFallback>
+                    {comment.author.fullname.slice(0, 2)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <span className="block font-semibold text-gray-500">
                     {comment.author.username}
                   </span>
                   <p className="text-gray-200">{comment.content}</p>
-                  
-                  <div className="flex gap-3 mt-2">
-                    <Heart size={16} className="text-red-500 cursor-pointer transition duration-200 hover:text-red-600 hover:scale-105 hover:animate-pulse"  />
-                    <Reply size={16} className="text-indigo-500 cursor-pointer transition duration-200 hover:text-indigo-600 hover:scale-105 hover:animate-pulse" />
+
+                  <div className="flex items-center gap-3 mt-2">
+                    <div className="flex items-center justify-center gap-1">
+                      <Heart
+                        onClick={() =>
+                          handleLikeUnlikeComment(comment._id.toString())
+                        }
+                        size={16}
+                        className={`text-red-500 translate-y-px ${
+                          comment.likeCount && comment.likeCount > 0
+                            ? "text-red-500 fill-current"
+                            : null
+                        } cursor-pointer transition duration-200 hover:text-red-600 hover:scale-105 hover:animate-pulse`}
+                      />
+                      <span>{comment.likeCount}</span>
+                    </div>
+                    <div className="flex items-center justify-center gap-1">
+                      <Reply
+                        size={16}
+                        className="text-indigo-500 cursor-pointer transition duration-200 hover:text-indigo-600 hover:scale-105 hover:animate-pulse"
+                      />
+                      <span>{comment.replyCount}</span>
+                    </div>
                     {currentUser.username === comment.author.username ? (
-                      <Trash onClick={()=>handleDeleteComment(comment._id.toString())} size={16} className="text-gray-500 cursor-pointer transition duration-200 hover:text-gray-600 hover:scale-105 hover:animate-pulse" />
+                      <Trash
+                        onClick={() =>
+                          handleDeleteComment(comment._id.toString())
+                        }
+                        size={16}
+                        className="text-gray-500 cursor-pointer transition duration-200 hover:text-gray-600 hover:scale-105 hover:animate-pulse"
+                      />
                     ) : null}
                   </div>
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-center text-gray-500">No comments yet. Be the first to comment!</div>
+            <div className="text-center text-gray-500">
+              No comments yet. Be the first to comment!
+            </div>
           )}
         </div>
       </DialogContent>
