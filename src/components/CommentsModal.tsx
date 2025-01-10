@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { IComment, IUser } from "@/types/types";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Send, Heart, Trash, Reply } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { createCommentAction } from "@/actions/comment.actions";
+import { createCommentAction, deleteCommentAction } from "@/actions/comment.actions";
 import { toast } from "@/hooks/use-toast";
 
 const CommentsModal = ({
@@ -45,21 +45,34 @@ const CommentsModal = ({
     }
   };
 
+  const handleDeleteComment = async (commentId: string) => {
+    const res = await deleteCommentAction(commentId)
+    if (res.success){
+      toast({
+        title: "Comment deleted successfully",
+        className: "bg-emerald-600",
+      })
+    }else{
+      toast({
+        title: "Failed to delete comment",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger className="flex items-center justify-center gap-1">
-        <MessageCircle className={`${commentsCount > 0 ? 'text-blue-500 fill-current' : null }`} size={20} />
+        <MessageCircle className={`${commentsCount > 0 ? 'text-blue-500 fill-current' : ''}`} size={18} />
         {commentsCount}
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>Comments</DialogTitle>
-        <div className="max-h-[400px] overflow-y-auto p-2">
+        <div className="max-h-[400px] overflow-y-auto p-2 custom-scrollbar">
           <div className="flex gap-4 mb-4">
             <Avatar className="mt-6 w-10 h-10">
               <AvatarImage src={currentUser.img} alt={currentUser.username} />
-              <AvatarFallback>
-                {currentUser.fullname.slice(0, 2)}
-              </AvatarFallback>
+              <AvatarFallback>{currentUser.fullname.slice(0, 2)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 flex flex-col gap-3 items-end">
               <Textarea
@@ -76,21 +89,24 @@ const CommentsModal = ({
           </div>
           {comments?.length > 0 ? (
             comments.map((comment, index) => (
-              <div
-                key={index}
-                className="flex gap-4 mb-4 p-4 border-b border-gray-300"
-              >
+              <div key={index} className="flex gap-4 mb-4 p-4 border-b border-gray-300 relative">
                 <Avatar className="w-8 h-8">
                   <AvatarImage src={comment.author.img} alt={comment.author.username} />
-                  <AvatarFallback>
-                    {comment.author.fullname.slice(0, 2)}
-                  </AvatarFallback>
+                  <AvatarFallback>{comment.author.fullname.slice(0, 2)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <span className="block font-semibold text-gray-500">
                     {comment.author.username}
                   </span>
                   <p className="text-gray-200">{comment.content}</p>
+                  
+                  <div className="flex gap-3 mt-2">
+                    <Heart size={16} className="text-red-500 cursor-pointer transition duration-200 hover:text-red-600 hover:scale-105 hover:animate-pulse"  />
+                    <Reply size={16} className="text-indigo-500 cursor-pointer transition duration-200 hover:text-indigo-600 hover:scale-105 hover:animate-pulse" />
+                    {currentUser.username === comment.author.username ? (
+                      <Trash onClick={()=>handleDeleteComment(comment._id.toString())} size={16} className="text-gray-500 cursor-pointer transition duration-200 hover:text-gray-600 hover:scale-105 hover:animate-pulse" />
+                    ) : null}
+                  </div>
                 </div>
               </div>
             ))

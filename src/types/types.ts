@@ -54,6 +54,7 @@ export interface ILike {
 
 // Comment Interface
 export interface IComment {
+  _id : mongoose.Types.ObjectId;
   content: string;
   author: IUser;
   post: Types.ObjectId;
