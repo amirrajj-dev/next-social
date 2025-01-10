@@ -138,7 +138,7 @@ const CreatePost = () => {
 
           <Button onClick={handleSubmitPost} disabled={isPosting} className="text-sm">
             <span>{isPosting ? 'Posting ...' : 'Post'}</span>
-            <Send />
+            <Send className="translate-y-px" />
           </Button>
         </CardFooter>
       </Card>

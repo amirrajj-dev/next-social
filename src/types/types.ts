@@ -28,7 +28,7 @@ export interface IPost {
   author: IUser;
   image?: string;
   likes: Types.ObjectId[];
-  comments: Types.ObjectId[];
+  comments: IComment[];
   notifications: Types.ObjectId[];
   likeCount?: number; // Virtual field
   commentCount?: number; // Virtual field
@@ -55,7 +55,7 @@ export interface ILike {
 // Comment Interface
 export interface IComment {
   content: string;
-  author: Types.ObjectId;
+  author: IUser;
   post: Types.ObjectId;
   likes: Types.ObjectId[];
   replies: Types.ObjectId[];
