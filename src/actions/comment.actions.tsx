@@ -5,6 +5,7 @@ import { IPost, IUser } from "@/types/types"
 import { usersModel } from "@/utils/models/user.model"
 import { postModel } from "@/utils/models/post.model"
 import { commentModel } from "@/utils/models/comment.model"
+import { notificationModel } from "@/utils/models/notification.model"
 import { revalidatePath } from "next/cache"
 
 export const createCommentAction = async (content : string , postId : string)=>{
@@ -30,6 +31,20 @@ export const createCommentAction = async (content : string , postId : string)=>{
         const comment = await commentModel.create(newComment)
         await postModel.findByIdAndUpdate(postId , { $push : { comments : comment._id } })
         await usersModel.findByIdAndUpdate(user._id , {$push : {comments : comment._id}})
+
+        //sending notification to the user whose post get commented
+        const post : IPost = await postModel.findById(postId)
+        if (user.username !== post.author.username){
+            //sending notification to the user
+            const newNotification = new notificationModel({
+                sender: user._id,
+                receiver: post.author._id,
+                type: "comment",
+                message: `${user.fullname} commented on your post`,
+                post : post._id
+            });
+            await newNotification.save()
+        }
         
         revalidatePath('/')
         return {message : 'comment created successfully' , success : true}
