@@ -121,10 +121,22 @@ export const likeUnlikeCommentAction = async (commentId : string)=>{
             user.likes = user.likes.filter(like=>like.toString()!== comment._id.toString())
             await user.save()
         } else {
+          if (user._id.toString() !== comment.author.toString()){
+            //sending notification
+            const notification = new notificationModel({
+              sender: user._id,
+              type : 'like',
+              receiver: comment.author.toString(),
+              message: `${user.fullname} liked your comment`,
+              comment : commentId
+            })
+            await notification.save()
+          }
             comment.likes.push(currentUser._id)
             await comment.save()
             user.likes.push(comment._id)
             await user.save()
+
         }
         revalidatePath("/")
         return { message: 'Comment liked/unliked successfully', success: true }

@@ -105,19 +105,21 @@ export const likeUnlikePostAction = async (postId : string , userId : string)=>{
             await user.save()
             
             //sending notification to the user which post gets liked
-            const newNotification = new notificationModel({
-                sender: user._id,
-                receiver: userWhichPostgetsLiked._id,
-                type: "like",
-                message: `${currentuser.fullname} liked your post`,
-                post : post._id
-            });
-            await newNotification.save()
         } else{
             post.likes.push(currentuser._id)
             await post.save()
             user.likes.push(post._id)
             await user.save()
+            if (user._id.toString() !== userWhichPostgetsLiked._id.toString()){
+                const newNotification = new notificationModel({
+                    sender: user._id,
+                    receiver: userWhichPostgetsLiked._id,
+                    type: "like",
+                    message: `${currentuser.fullname} liked your post`,
+                    post : post._id
+                });
+                await newNotification.save()
+            }
         }
         revalidatePath('/')
         return { message: 'Post liked/unliked successfully', success: true };
