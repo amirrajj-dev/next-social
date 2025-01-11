@@ -40,6 +40,7 @@ const CommentsModal = ({
           title: "Comment created successfully",
           className: "bg-emerald-600",
         });
+        setNewComment("");
       } else {
         toast({
           title: "Failed to create comment",
@@ -67,7 +68,7 @@ const CommentsModal = ({
   const handleLikeUnlikeComment = async (commentId: string) => {
     const res = await likeUnlikeCommentAction(commentId);
     if (res.success) {
-      return;
+      return
     } else {
       toast({
         title: "Failed to like/unlike comment",
@@ -127,7 +128,7 @@ const CommentsModal = ({
                   <span className="block font-semibold text-gray-500">
                     {comment.author.username}
                   </span>
-                  <p className="text-gray-200">{comment.content}</p>
+                  <p className="text-gray-900 dark:text-gray-200">{comment.content}</p>
 
                   <div className="flex items-center gap-3 mt-2">
                     <div className="flex items-center justify-center gap-1">
