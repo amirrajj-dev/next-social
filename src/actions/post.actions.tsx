@@ -119,6 +119,8 @@ export const likeUnlikePostAction = async (postId : string , userId : string)=>{
                     post : post._id
                 });
                 await newNotification.save()
+                userWhichPostgetsLiked.notifications.push(newNotification._id)
+                await userWhichPostgetsLiked.save()
             }
         }
         revalidatePath('/')
