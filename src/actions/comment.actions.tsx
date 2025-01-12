@@ -37,7 +37,7 @@ export const createCommentAction = async (content: string, postId: string) => {
     });
 
     //sending notification to the user whose post get commented
-    const post: IPost = (await postModel.findById(postId)) as IPost;
+    const post: IPost = (await postModel.findById(postId).populate('author' , 'username')) as IPost;
     if (user.username !== post.author.username) {
       //sending notification to the user
       const newNotification = new notificationModel({

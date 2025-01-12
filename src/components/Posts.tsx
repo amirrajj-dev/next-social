@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Post from "./Post";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { ScrollArea } from "./ui/scroll-area";
 
 const Posts = async () => {
   const currentUser = (await getCurrentUserAction()).data;
@@ -33,11 +34,13 @@ const Posts = async () => {
   }
 
   return (
-    <div className="flex flex-col gap-3 mt-4 max-h-[600px] overflow-auto">
-      {posts?.map((post, index) => (
-        <Post post={post} currentUser={currentUser} key={index + 1} />
-      ))}
-    </div>
+    <ScrollArea className="h-[600px]">
+      <div className="flex flex-col gap-3 mt-4 overflow-auto">
+        {posts?.map((post, index) => (
+          <Post post={post} currentUser={currentUser} key={index + 1} />
+        ))}
+      </div>
+    </ScrollArea>
   );
 };
 
