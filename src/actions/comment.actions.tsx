@@ -45,9 +45,14 @@ export const createCommentAction = async (content: string, postId: string) => {
         receiver: post.author._id,
         type: "comment",
         message: `${user.fullname} commented on your post`,
+        comment : comment._id,
         post: post._id,
       });
       await newNotification.save();
+      //update the post author's notifications
+      await usersModel.findByIdAndUpdate(post.author._id, {
+        $push: { notifications: newNotification._id },
+      })
     }
 
     revalidatePath("/");
@@ -131,6 +136,9 @@ export const likeUnlikeCommentAction = async (commentId : string)=>{
               comment : commentId
             })
             await notification.save()
+            const userGetNotification = await usersModel.findById(comment.author)
+            userGetNotification.notifications.push(notification._id)
+            await userGetNotification.save()
           }
             comment.likes.push(currentUser._id)
             await comment.save()

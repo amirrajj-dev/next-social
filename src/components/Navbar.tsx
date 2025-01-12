@@ -51,15 +51,15 @@ const Navbar = () => {
 
   return (
     <div className="sticky top-0 z-50 bg-white dark:bg-neutral-900 p-4 flex items-center justify-between border-b border-b-neutral-900 dark:border-b-neutral-50">
-      <div className="text-black dark:text-neutral-200 text-2xl sm:text-3xl font-bold">
+      <Link href={'/'} className="text-black dark:text-neutral-200 text-2xl sm:text-3xl font-bold">
         Next-Social
-      </div>
+      </Link>
 
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center gap-10">
         <ModeToggle />
         <Link
-          href={""}
+          href={"/"}
           className="flex items-center justify-center gap-2 text-black dark:text-neutral-200"
         >
           <Home size={20} className="-translate-y-px" />
@@ -68,14 +68,14 @@ const Navbar = () => {
         {user ? (
           <>
             <Link
-              href={""}
+              href={"/notifications"}
               className="flex items-center justify-center gap-2 text-black dark:text-neutral-200"
             >
               <Bell size={20} className="-translate-y-px" />
               <span>Notifications</span>
             </Link>
             <Link
-              href={""}
+              href={`/profile/${user.username}`}
               className="flex items-center justify-center gap-2 text-black dark:text-neutral-200"
             >
               <User size={20} className="-translate-y-px" />
