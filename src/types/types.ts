@@ -37,13 +37,15 @@ export interface IPost {
 
 // Notification Interface
 export interface INotification {
+  _id : mongoose.Types.ObjectId;
   type: "like" | "comment" | "follow";
-  receiver: Types.ObjectId;
-  sender: Types.ObjectId;
-  post?: Types.ObjectId;
-  comment?: Types.ObjectId;
+  receiver: IUser;
+  sender: IUser;
+  post?: IPost;
+  comment?: IComment;
   message: string;
   read: boolean;
+  createdAt : Date
 }
 
 // Like Interface
