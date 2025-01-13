@@ -19,6 +19,7 @@ export interface IUser {
   followers: Types.ObjectId[];
   following: Types.ObjectId[];
   notifications: Types.ObjectId[];
+  createdAt : Date
 }
 
 // Post Interface
