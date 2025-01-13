@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import PostLikeBtn from "./PostLikeBtn";
 import DeletePostModal from "./DeletePostModal";
 import CommentsModal from "./CommentsModal";
+import Link from "next/link";
 
 const Post = ({
   post,
@@ -18,7 +19,7 @@ const Post = ({
       <CardHeader>
         <CardTitle>
           <div className="flex items-center justify-between flex-wrap">
-            <div className="flex items-center gap-3">
+            <Link href={`/profile/${post.author.username}`} className="flex items-center gap-3">
               <Avatar>
                 <AvatarImage src={post.author.img} />
                 <AvatarFallback>
@@ -34,7 +35,7 @@ const Post = ({
                   @{post?.author.username}
                 </span>
               </div>
-            </div>
+            </Link>
             <div className="text-sm dark:text-neutral-400 text-neutral-600 mt-2 sm:mt-0">
               {moment(post.createdAt).fromNow()}
             </div>

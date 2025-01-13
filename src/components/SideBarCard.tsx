@@ -26,7 +26,7 @@ const SideBarCard = async () => {
               <Image src={user.img} width={80} height={80} className="rounded-full" alt="user profile" />
               <Link href={`/profile/${user.username}`} className="text-lg sm:text-xl text-center">{user.fullname}</Link>
               <Link href={`/profile/${user.username}`} className="dark:text-neutral-500 text-base sm:text-lg">{user.username}</Link>
-              <p className="dark:text-neutral-500 text-base sm:text-lg mt-2">{user.bio || 'Your bio'}</p>
+              <p className="dark:text-neutral-500 text-sm mt-2">{user.bio || 'Your bio'}</p>
             </CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-between pt-4 px-0 w-full">
