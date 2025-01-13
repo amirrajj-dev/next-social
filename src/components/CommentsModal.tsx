@@ -26,7 +26,7 @@ const CommentsModal = ({
 }: {
   comments: IComment[];
   currentUser: IUser;
-  commentsCount: number | undefined;
+  commentsCount: number;
   postId: string;
 }) => {
   const [newComment, setNewComment] = useState("");

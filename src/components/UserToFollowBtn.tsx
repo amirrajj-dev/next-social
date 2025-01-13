@@ -10,7 +10,7 @@ const UserToFollowBtn = ({username} : {username : string}) => {
     const handleFollowUnfollowUser = async ()=>{
         setIsFollowing(true)
         const res = await followUnfollowUserAction(username)
-        if (res.success){
+        if (res!.success){
             toast({
                 title: "User followed succesfully",
                 className : 'bg-emerald-600'

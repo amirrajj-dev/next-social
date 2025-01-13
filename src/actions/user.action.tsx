@@ -15,7 +15,10 @@ export const getUsersToFollowAction = async () => {
     const token = cookiesStore.get("next-social-token")?.value;
 
     // Decode token for email
+    if (!process.env.SECRET_KEY || !token) return
+    
     const decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+    if (typeof decodedToken === 'string') { throw new Error('Unexpected token type'); }
     const currentUser = await usersModel.findOne({ email: decodedToken.email });
 
     // Getting users excluding the current user
@@ -60,7 +63,9 @@ export const followUnfollowUserAction = async (username: string) => {
         success: false,
       };
     }
+    if (!process.env.SECRET_KEY) return
     const decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
+    if (typeof decodedToken === 'string') { throw new Error('Unexpected token type'); }
     const user = await usersModel.findOne({ email: decodedToken.email });
     const userToFollow = await usersModel.findOne({ username: username });
     if (!userToFollow) {

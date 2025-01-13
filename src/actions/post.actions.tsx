@@ -9,6 +9,7 @@ import { revalidatePath } from "next/cache";
 import { getCurrentUserAction } from "./auth.actions";
 import { notificationModel } from "@/utils/models/notification.model";
 import { commentModel } from "@/utils/models/comment.model";
+import mongoose from "mongoose";
 
 export const createPostAction = async (post: FormData) => {
   try {
@@ -19,7 +20,7 @@ export const createPostAction = async (post: FormData) => {
     const author = entries.author as string;
     const image = entries.image as File;
 
-    const currentUser: IUser = (await getCurrentUserAction()).data;
+    const currentUser: IUser = (await getCurrentUserAction())?.data;
 
     if (!content || !author) {
       return { message: 'Each post should contain author and content.', success: false };
@@ -90,16 +91,16 @@ export const likeUnlikePostAction = async (postId: string, userId: string) => {
     if (!post) {
       return { message: 'Post not found.', success: false };
     }
-    const currentUser = (await getCurrentUserAction()).data;
+    const currentUser = (await getCurrentUserAction())?.data;
     if (!currentUser) {
       return { message: 'User not logged in.', success: false };
     }
     const user = await usersModel.findById({ _id: currentUser._id });
 
     if (post.likes.includes(currentUser._id)) {
-      post.likes = post.likes.filter(like => like.toString() !== currentUser._id.toString());
+      post.likes = post.likes.filter((like : mongoose.Types.ObjectId) => like.toString() !== currentUser._id.toString());
       await post.save();
-      user.likes = user.likes.filter(like => like.toString() !== post._id.toString());
+      user.likes = user.likes.filter((like : mongoose.Types.ObjectId) => like.toString() !== post._id.toString());
       await user.save();
       
       //sending notification to the user which post gets liked
@@ -133,7 +134,7 @@ export const deletePostAction = async (postId: string) => {
     await connectToDb();
 
     const post: IPost = await postModel.findById(postId).exec();
-    const currentUser: IUser = (await getCurrentUserAction()).data;
+    const currentUser: IUser = (await getCurrentUserAction())?.data;
 
     if (!post) {
       return { message: 'Post not found.', success: false };
@@ -159,11 +160,11 @@ export const deletePostAction = async (postId: string) => {
     for (const user of users) {
         // Remove the postId from user likes if it exists
         if (user.likes.includes(postId)) {
-          user.likes = user.likes.filter(like => like.toString() !== postId.toString());
+          user.likes = user.likes.filter((like : mongoose.Types.ObjectId) => like.toString() !== postId.toString());
         }
 
         // Remove all comments related to the post from user comments
-        user.comments = user.comments.filter(userComment =>
+        user.comments = user.comments.filter((userComment : mongoose.Types.ObjectId) =>
           !commentsToDelete.some(comment => comment._id.toString() === userComment.toString())
         );
 

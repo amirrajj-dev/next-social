@@ -27,7 +27,7 @@ const CreatePost = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const user = (await getCurrentUserAction()).data;
+      const user = (await getCurrentUserAction())?.data;
       setUser(user);
     };
     getUser();

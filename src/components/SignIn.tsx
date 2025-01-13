@@ -20,7 +20,7 @@ const SignIn = () => {
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const res = await signInAction(formData);
     
-    if (res.success) {
+    if (res!.success) {
       toast.toast({
         title: "Signed in Successfully",
         description: "Hi again !",
@@ -43,7 +43,7 @@ const SignIn = () => {
   useEffect(() => {
     const refreshToken = async () => {
       const res = await refreshTokenAction();
-      if (res.success) {
+      if (res!.success) {
         console.log("Token refreshed successfully");
       } else {
         console.log("Failed to refresh token");

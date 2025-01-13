@@ -25,7 +25,7 @@ const Navbar = () => {
   useEffect(() => {
     const getCurrentUser = async () => {
       const user = await getCurrentUserAction();
-      setUser(user.data);
+      setUser(user!.data);
     };
     getCurrentUser();
   }, []);
@@ -130,14 +130,14 @@ const Navbar = () => {
                 {user ? (
                   <>
                     <Link
-                      href={""}
+                      href={"/notifications"}
                       className="flex items-center justify-center gap-2 text-black dark:text-neutral-200"
                     >
                       <Bell size={20} className="-translate-y-px" />
                       <span>Notifications</span>
                     </Link>
                     <Link
-                      href={""}
+                      href={"/"}
                       className="flex items-center justify-center gap-2 text-black dark:text-neutral-200"
                     >
                       <Home size={20} className="-translate-y-px" />

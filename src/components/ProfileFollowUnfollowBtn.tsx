@@ -13,7 +13,7 @@ const ProfileFollowUnfollowBtn: React.FC<{ isFollowing: boolean , username : str
     const handleFollowUnfollowUser = async ()=>{
         setIsLoading(true)
         const res = await followUnfollowUserAction(username)
-        if (res.success){
+        if (res!.success){
             toast({
                 title: `User ${isFollowing ? 'unFollowed' : 'Followed'} succesfully`,
                 className : 'bg-emerald-600'

@@ -3,9 +3,12 @@ import { likeUnlikePostAction } from "@/actions/post.actions";
 import { IUser } from "@/types/types";
 import { Heart } from "lucide-react";
 import React from "react";
+import mongoose from 'mongoose';
 
-const PostLikeBtn = ({ likeCount , postId , userId , currentUser }: { likeCount: number | undefined; postId: string; userId: string; currentUser: IUser }) => {
-  const [liked, setLiked] = React.useState(currentUser.likes.includes(postId.toString()));
+const ObjectId = mongoose.Types.ObjectId;
+
+const PostLikeBtn = ({ likeCount, postId, userId, currentUser }: { likeCount: number | undefined; postId: string; userId: string; currentUser: IUser }) => {
+  const [liked, setLiked] = React.useState(currentUser.likes.some((like: mongoose.Types.ObjectId) => like.toString() === postId.toString()));
 
   const onClickHandler = async (postId: string, userId: string) => {
     await likeUnlikePostAction(postId, userId);

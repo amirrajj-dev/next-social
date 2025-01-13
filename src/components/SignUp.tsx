@@ -24,8 +24,8 @@ const Signup = () => {
     setIsSigninigUp(true)
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const res = await signUpAction(formData);
-    if (res.error || !res.success) {
-      console.log(res.error);
+    if (res!.error || !res!.success) {
+      console.log(res!.error);
       toast.toast({
         title: "Error Signing you up ",
         description: "Try Again Later",

@@ -44,6 +44,8 @@ export const signUpAction = async (formdata: FormData) => {
       return { message: "Invalid email address or format", success: false };
     }
 
+    if (!process.env.SECRET_KEY) return
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const token = await jwt.sign({ email }, process.env.SECRET_KEY, {
       expiresIn: "1h",
@@ -103,6 +105,8 @@ export const signInAction = async (formdata: FormData) => {
       return { message: "Invalid password", success: false };
     }
 
+    if (!process.env.SECRET_KEY) return
+
     const token = await jwt.sign({ email }, process.env.SECRET_KEY, {
       expiresIn: "1h",
     });
@@ -149,16 +153,19 @@ export const getCurrentUserAction = async () => {
 
     let decodedToken;
     try {
+      if (!process.env.SECRET_KEY) return
       decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
     } catch (error) {
       // Token is expired so we use refresh token
       if (refreshToken) {
         const newToken = await refreshTokenAction();
+        if (!newToken) return
         if (!newToken.success) {
           return { success: false, message: "Failed to refresh token" };
         }
         if (typeof newToken.accessToken === "string") {
           token = newToken.accessToken;
+          if (!process.env.SECRET_KEY) return
           decodedToken = await jwt.verify(token, process.env.SECRET_KEY);
         } else {
           return { success: false, message: "Invalid access token format" };
@@ -167,6 +174,8 @@ export const getCurrentUserAction = async () => {
         return { success: false, message: "No refresh token found" };
       }
     }
+
+    if (typeof decodedToken === 'string') { throw new Error('Unexpected token type'); }
 
     const user = await usersModel.findOne(
       { email: decodedToken.email },
@@ -200,6 +209,7 @@ export const refreshTokenAction = async () => {
       if (!refreshToken || refreshToken.expiryDate < new Date()) {
         return { message: "Invalid or expired refresh token" , success : false };
       }
+      if (!process.env.SECRET_KEY) return
       const newAccessToken = jwt.sign({ email: refreshToken.userId.email }, process.env.SECRET_KEY, { expiresIn: "1h" });
       const newRefreshToken = await generateRefreshToken(refreshToken.userId._id);
   

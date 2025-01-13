@@ -26,7 +26,7 @@ export interface IUser {
 export interface IPost {
   _id: mongoose.Types.ObjectId;
   content: string;
-  author: IUser;
+  author: IUser | mongoose.Types.ObjectId;
   image?: string;
   likes: Types.ObjectId[];
   comments: IComment[];

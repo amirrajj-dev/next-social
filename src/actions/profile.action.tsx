@@ -23,7 +23,7 @@ export const getUserPostsAction = async (userId: mongoose.Types.ObjectId) => {
           select: "fullname img username fullname",
         },
       },
-    ]);
+    ]).sort({_id : -1})
     return {
       message: "user Posts fetched succesfully",
       data: UserPosts,
@@ -50,7 +50,7 @@ export const getUserLikedPostsAction = async (
           select: "fullname img username fullname",
         },
       },
-    ]);
+    ]).sort({_id : -1})
     return {
       message: "user liked posts fetched succesfully",
       data: likedPosts,
@@ -76,7 +76,7 @@ export const updateProfileAction = async (formdata: FormData, username: string) 
     const bio = entries.bio as string;
     const location = entries.location as string;
     const img = entries.img as File;
-    const user : IUser = await usersModel.findOne({ username });
+    const user = await usersModel.findOne({ username });
     if (!user) {
       return { message: "User not found", success: false };
     }

@@ -15,7 +15,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 const SideBarCard = async () => {
-  const user = (await getCurrentUserAction()).data;
+  const user = (await getCurrentUserAction())?.data;
 
   return (
     <>

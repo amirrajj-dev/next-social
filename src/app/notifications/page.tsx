@@ -11,7 +11,7 @@ import Image from "next/image";
 import moment from "moment";
 
 const Notifications = async () => {
-  const user: IUser = (await getCurrentUserAction()).data;
+  const user: IUser = (await getCurrentUserAction())?.data;
   const notifications: INotification[] = (await getNotificationsAction()).data as INotification[];
 
   return (
@@ -27,12 +27,12 @@ const Notifications = async () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Notifications</span>
-                  <span>{notifications.filter(notif => !notif.read).length} unread</span>
+                  <span>{notifications?.filter(notif => !notif.read).length} unread</span>
                 </CardTitle>
               </CardHeader>
               <div>
                 <ScrollArea className="h-[600px]">
-                  {notifications.length > 0 ? (
+                  {notifications?.length > 0 ? (
                     notifications.map((notif) => (
                       <CardContent
                         key={notif._id.toString()}

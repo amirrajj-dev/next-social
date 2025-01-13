@@ -82,20 +82,21 @@ const schema = new mongoose.Schema(
   }
 );
 
+// Use deleteOne middleware instead of remove
 // the above code is a middleware (pre middleware) and the performance is like this that when a user delete his account all posts and comments that created by that user
 //will get deleted authomatically in this approach you should definitly use remove for deleting a user from the database user.remove() forexample
-schema.pre('remove', async function (next) {
-    try {
-      await postModel.deleteMany({ author: this._id });
-      await commentModel.deleteMany({ author: this._id });
-  
-      // Remove the user from followers and following lists of other users
-      await usersModel.updateMany({ followers: this._id }, { $pull: { followers: this._id } });
-      await usersModel.updateMany({ following: this._id }, { $pull: { following: this._id } });
-      next();
-    } catch (error) {
-      next(error);
-    }
-  });  
+schema.pre('deleteOne', { document: true, query: false }, async function (next) {
+  try {
+    await postModel.deleteMany({ author: this._id });
+    await commentModel.deleteMany({ author: this._id });
+
+    // Remove the user from followers and following lists of other users
+    await usersModel.updateMany({ followers: this._id }, { $pull: { followers: this._id } });
+    await usersModel.updateMany({ following: this._id }, { $pull: { following: this._id } });
+    next();
+  } catch (error) {
+    next(error as mongoose.CallbackError)
+  }
+});
 
 export const usersModel = mongoose.models.user || mongoose.model('user', schema);

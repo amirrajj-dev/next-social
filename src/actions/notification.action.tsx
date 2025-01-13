@@ -7,7 +7,7 @@ import { notificationModel } from "@/utils/models/notification.model";
 export const getNotificationsAction = async () => {
   try {
     await connectToDb();
-    const currentUser: IUser = (await getCurrentUserAction()).data;
+    const currentUser: IUser = (await getCurrentUserAction())?.data;
     const user: IUser = await usersModel.findById(currentUser._id) as IUser;
 
     // Filtering notifications where sender and receiver are not the same

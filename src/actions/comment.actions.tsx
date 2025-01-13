@@ -7,6 +7,7 @@ import { postModel } from "@/utils/models/post.model";
 import { commentModel } from "@/utils/models/comment.model";
 import { notificationModel } from "@/utils/models/notification.model";
 import { revalidatePath } from "next/cache";
+import mongoose from "mongoose";
 
 export const createCommentAction = async (content: string, postId: string) => {
   try {
@@ -21,7 +22,7 @@ export const createCommentAction = async (content: string, postId: string) => {
     if (!commentedPost) {
       return { message: "post not found", success: false };
     }
-    const user: IUser = (await getCurrentUserAction()).data;
+    const user: IUser = (await getCurrentUserAction())?.data;
 
     const newComment = {
       content: content,
@@ -37,7 +38,7 @@ export const createCommentAction = async (content: string, postId: string) => {
     });
 
     //sending notification to the user whose post get commented
-    const post: IPost = (await postModel.findById(postId).populate('author' , 'username')) as IPost;
+    const post = (await postModel.findById(postId).populate('author' , 'username'));
     if (user.username !== post.author.username) {
       //sending notification to the user
       const newNotification = new notificationModel({
@@ -74,7 +75,7 @@ export const deleteCommentAction = async (commentId: string) => {
     if (!comment) {
       return { message: "comment not found", success: false };
     }
-    const user: IUser = (await getCurrentUserAction()).data;
+    const user: IUser = (await getCurrentUserAction())?.data;
     // handling imposibble  scenario 😂👽💚
     if (comment.author._id.toString() !== user._id.toString()) {
       return {
@@ -83,9 +84,9 @@ export const deleteCommentAction = async (commentId: string) => {
       };
     }
 
-    const users : IUser[] = await usersModel.find({})
+    const users = await usersModel.find({})
     users.forEach(user =>{
-        user.likes = user.likes.filter(like => like.toString()!== comment._id.toString())
+        user.likes = user.likes.filter((like : mongoose.Types.ObjectId) => like.toString()!== comment._id.toString())
         user.save()
     })
     await commentModel.findByIdAndDelete(commentId);
@@ -110,20 +111,20 @@ export const deleteCommentAction = async (commentId: string) => {
 export const likeUnlikeCommentAction = async (commentId : string)=>{
     try {
         await connectToDb()
-        const comment : IComment = (await commentModel.findById(commentId)) as IComment
+        const comment = (await commentModel.findById(commentId))
         if(!comment){
             return { message: 'Comment not found', success: false }
         }
-        const currentUser = (await getCurrentUserAction()).data
-        const user : IUser = await usersModel.findById(currentUser._id) as IUser
+        const currentUser = (await getCurrentUserAction())?.data
+        const user = await usersModel.findById(currentUser._id)
         if (!user){
             return { message: 'User not logged in', success: false }
         }
 
         if(comment.likes.includes(currentUser._id)){
-            comment.likes = comment.likes.filter(like => like.toString()!== currentUser._id.toString())
+            comment.likes = comment.likes.filter((like : mongoose.Types.ObjectId) => like.toString()!== currentUser._id.toString())
             await comment.save()
-            user.likes = user.likes.filter(like=>like.toString()!== comment._id.toString())
+            user.likes = user.likes.filter((like : mongoose.Types.ObjectId)=>like.toString()!== comment._id.toString())
             await user.save()
         } else {
           if (user._id.toString() !== comment.author.toString()){

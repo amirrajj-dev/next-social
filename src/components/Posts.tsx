@@ -8,7 +8,7 @@ import Link from "next/link";
 import { ScrollArea } from "./ui/scroll-area";
 
 const Posts = async () => {
-  const currentUser = (await getCurrentUserAction()).data;
+  const currentUser = (await getCurrentUserAction())?.data;
   const posts = (await getAllPostsAction()).data;
 
   if (!currentUser) {

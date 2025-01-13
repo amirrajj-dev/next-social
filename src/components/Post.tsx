@@ -2,18 +2,33 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import moment from "moment";
 import Image from "next/image";
-import { IUser, IPost } from "@/types/types";
+import { IComment, IUser} from "@/types/types";
 import { MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import PostLikeBtn from "./PostLikeBtn";
 import DeletePostModal from "./DeletePostModal";
 import CommentsModal from "./CommentsModal";
 import Link from "next/link";
+import mongoose from "mongoose";
+
+export interface IPost {
+  _id: mongoose.Types.ObjectId;
+  content: string;
+  author: IUser
+  image?: string;
+  likes: mongoose.Types.ObjectId[];
+  comments: IComment[];
+  notifications: mongoose.Types.ObjectId[];
+  likeCount?: number; // Virtual field
+  commentCount: number; // Virtual field
+  createdAt : Date
+}
 
 const Post = ({
   post,
   currentUser,
 }: { post: IPost } & { currentUser: IUser }) => {
+
   return (
     <Card className="p-1.5 shadow-lg rounded-lg relative">
       <CardHeader>
