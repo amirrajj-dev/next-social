@@ -14,7 +14,7 @@ export const getUserPostsAction = async (userId: mongoose.Types.ObjectId) => {
     await connectToDb();
     const user: IUser = (await usersModel.findById(userId)) as IUser;
     const UserPosts = await postModel.find({ author: user._id }).populate([
-      { path: "author", select: "fullname img" },
+      { path: "author", select: "fullname img username" },
       //populating author of comments field
       {
         path: "comments",
@@ -41,7 +41,7 @@ export const getUserLikedPostsAction = async (
     await connectToDb();
     const user: IUser = (await usersModel.findById(userId)) as IUser;
     const likedPosts = await postModel.find({ likes: user._id }).populate([
-      { path: "author", select: "fullname img" },
+      { path: "author", select: "fullname img username" },
       //populating author of comments field
       {
         path: "comments",
@@ -76,12 +76,13 @@ export const updateProfileAction = async (formdata: FormData, username: string) 
     const bio = entries.bio as string;
     const location = entries.location as string;
     const img = entries.img as File;
-    const user = await usersModel.findOne({ username });
+    const user : IUser = await usersModel.findOne({ username });
     if (!user) {
       return { message: "User not found", success: false };
     }
-    if (img) {
-      if (user.img) {
+
+    if (img && img.size > 0) {
+      if (user.img && !user.img.startsWith('/avatars')) {
         const imagePath = path.join(process.cwd(), "public", user.img);
         if (fs.existsSync(imagePath)) {
           fs.unlinkSync(imagePath);
@@ -103,6 +104,7 @@ export const updateProfileAction = async (formdata: FormData, username: string) 
     user.location = location;
     await user.save();
     revalidatePath("/profile");
+    revalidatePath('/')
     return { message: "Profile updated succesfully", success: true };
   } catch (error) {
     return { message: "Error updating profile", error, success: false };
