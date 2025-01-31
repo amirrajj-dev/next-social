@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   //including this url support for Image components
   images: {
-    domains: ["secure.gravatar.com"],
+    domains: ["secure.gravatar.com", "res.cloudinary.com"],
   },
 };
 

@@ -17,13 +17,14 @@ import { Input } from "@/components/ui/input";
 import { createPostAction } from "@/actions/post.actions";
 import { IUser } from "@/types/types";
 import { toast } from "@/hooks/use-toast";
+import { uploadAction } from "@/actions/upload-action";
 
 const CreatePost = () => {
   const [user, setUser] = useState<IUser | null>(null);
   const [content, setContent] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [previewImg, setPreviewImg] = useState<string>("");
-  const [isPosting , setIsPosting] = useState<boolean>(false)
+  const [isPosting, setIsPosting] = useState<boolean>(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -47,32 +48,56 @@ const CreatePost = () => {
   };
 
   const handleSubmitPost = async () => {
-    setIsPosting(true)
-    if (!user){
+    setIsPosting(true);
+
+    if (!user) {
       toast({
-        title : 'you must be authenticated to create a new post',
-        variant : 'destructive'
-      })
-      setIsPosting(false)
+        title: "You must be authenticated to create a new post",
+        variant: "destructive",
+      });
+      setIsPosting(false);
       return;
     }
 
-    if (!content){
+    if (!content) {
       toast({
-        title: 'Please fill all the fields',
-        variant : 'destructive'
-      })
-      setIsPosting(false)
+        title: "Please fill all the fields",
+        variant: "destructive",
+      });
+      setIsPosting(false);
       return;
     }
-    
+
+    let imageUrl = "";
+    if (image) {
+      const MAX_SIZE_MB = 1 * 1_000_000;
+      if (image.size > MAX_SIZE_MB) {
+        toast({
+          title: "Image size must not exceed 1MB",
+          variant: "destructive",
+        });
+        setIsPosting(false);
+        return;
+      }
+      const uploadResult = await uploadAction(image);
+      if (typeof uploadResult === "object" && !uploadResult.success) {
+        toast({
+          title: uploadResult.message,
+          variant: "destructive",
+        });
+        setIsPosting(false);
+        return;
+      }
+      imageUrl = uploadResult as string;
+    }
+
     const formData = new FormData();
     formData.append("content", content);
     formData.append("author", user!.fullname);
     if (image) {
-      formData.append("image", image);
+      formData.append("image", image, image.name);
     }
-    
+
     const response = await createPostAction(formData);
     if (response.success) {
       setContent("");
@@ -80,15 +105,15 @@ const CreatePost = () => {
       toast({
         title: "Post created successfully",
         description: "Your post has been created successfully",
-        className : 'bg-emerald-500'
-      })
-      setIsPosting(false)
+        className: "bg-emerald-500",
+      });
     } else {
       toast({
-        title : response.message || "Failed to create post.",
-        variant : 'destructive'
-      })
+        title: response.message || "Failed to create post.",
+        variant: "destructive",
+      });
     }
+    setIsPosting(false);
   };
 
   return (
@@ -118,7 +143,11 @@ const CreatePost = () => {
                 alt="preview post image"
                 className="rounded-md shadow-md"
               />
-              <X onClick={resetPostImg} className="text-neutral-100 bg-neutral-900 rounded-md absolute top-4 right-4 animate-bounce cursor-pointer" size={24} />
+              <X
+                onClick={resetPostImg}
+                className="text-neutral-100 bg-neutral-900 rounded-md absolute top-4 right-4 animate-bounce cursor-pointer"
+                size={24}
+              />
             </div>
           </CardContent>
         )}
@@ -136,8 +165,12 @@ const CreatePost = () => {
             />
           </Button>
 
-          <Button onClick={handleSubmitPost} disabled={isPosting} className="text-sm">
-            <span>{isPosting ? 'Posting ...' : 'Post'}</span>
+          <Button
+            onClick={handleSubmitPost}
+            disabled={isPosting}
+            className="text-sm"
+          >
+            <span>{isPosting ? "Posting ..." : "Post"}</span>
             <Send className="translate-y-px" />
           </Button>
         </CardFooter>
