@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧑‍🤝‍🧑 Next-Social
 
-## Getting Started
+Next-Social is a modern, responsive social networking platform built with the latest version and features of Next.js, Tailwind CSS, and MongoDB an ShadcnUi.
 
-First, run the development server:
+## 📑 Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. [📖 Project Overview](#-project-overview)
+2. [⚙️ Features](#️-Features)
+5. [🚀 Getting Started](#-getting-started)
+
+## 📖 Project Overview
+
+Next-Social is a full-stack social networking platform that allows users to create posts, comment on them, like them, and follow other users. It also includes real-time notifications and supports dark and light themes.
+
+### ⚙️ Features
+
+⚡User Authentication: Sign-up, Sign-in, Sign-out, and token refresh functionality.
+
+⚡Profile Management: Update profile, view user posts and liked posts.
+
+⚡Post Creation and Management: Create, delete, like/unlike posts.
+
+⚡Comment System: Create, delete, like/unlike comments.
+
+⚡Notification System: Real-time notifications for likes, comments, and follows.
+
+⚡Dark/Light Theme: User-customizable themes with support for system theme detection.
+
+⚡Responsive UI: Fully responsive design using Tailwind CSS and shadcn/ui components.
+
+### 🚀 Getting Started
+
+before getting started make sure you have the following tools in your machine :
+
+🔰node js
+
+🍏mongo db
+
+🏡mongo db compass (for better experience)
+
+
+1. 📋 Clone the repo:
+
+```js
+git clone https://github.com/amirrajj-dev/next-social.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. 📦 Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```js
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. 🛠️ Create a .env file and add your MongoDB URI and secret key:
 
-## Learn More
+```js
+MONGODB_URI=mongodb://localhost:27017/next-social
+SECRET_KEY=your_secret_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+4- ▶️ Run the development server:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```js
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+and thats it ! open http://localhost:3000 and see the project⚡
 
-## Deploy on Vercel
+## ⚠️ Warning 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+cause im using the lastest version of next js which is 15 right now for installing some of shadcn ui components and other dependencies you should use --force flag cuase till now no ui library is completely sync with next js 15 so ther is no problem about it and you dont to worry about it at all when you enter npm install in your terminal shadcn authomatically suggests you --force flag so we good🫡✅
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# End🔚
+
+Hope You like this porject my firend🫂❣️😉
