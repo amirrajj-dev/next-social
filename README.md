@@ -1,12 +1,13 @@
 # 🧑‍🤝‍🧑 Next-Social
 
-Next-Social is a modern, responsive social networking platform built with the latest version and features of Next.js, Tailwind CSS, and MongoDB an ShadcnUi.
+Next-Social is a modern, responsive social networking platform built with the latest version and features of Next.js, Tailwind CSS, MongoDB, and ShadcnUi.
 
 ## 📑 Table of Contents
 
 1. [📖 Project Overview](#-project-overview)
 2. [⚙️ Features](#️-Features)
-5. [🚀 Getting Started](#-getting-started)
+3. [🚀 Getting Started](#-getting-started)
+4. [🌐 Live Demo](#-live-demo)
 
 ## 📖 Project Overview
 
@@ -30,46 +31,49 @@ Next-Social is a full-stack social networking platform that allows users to crea
 
 ### 🚀 Getting Started
 
-before getting started make sure you have the following tools in your machine :
+Before getting started, make sure you have the following tools on your machine:
 
-🔰node js
+🔰Node.js
 
-🍏mongo db
+🍏MongoDB
 
-🏡mongo db compass (for better experience)
-
+🏡MongoDB Compass (for a better experience)
 
 1. 📋 Clone the repo:
 
-```js
-git clone https://github.com/amirrajj-dev/next-social.git
-```
+    ```bash
+    git clone https://github.com/amirrajj-dev/next-social.git
+    ```
 
 2. 📦 Install dependencies:
 
-```js
-npm install
-```
+    ```bash
+    npm install
+    ```
 
 3. 🛠️ Create a .env file and add your MongoDB URI and secret key:
 
-```js
-MONGODB_URI=mongodb://localhost:27017/next-social
-SECRET_KEY=your_secret_key
-```
+    ```bash
+    MONGODB_URI=mongodb://localhost:27017/next-social
+    SECRET_KEY=your_secret_key
+    ```
 
-4- ▶️ Run the development server:
+4. ▶️ Run the development server:
 
-```js
-npm run dev
-```
+    ```bash
+    npm run dev
+    ```
 
-and thats it ! open http://localhost:3000 and see the project⚡
+And that's it! Open [http://localhost:3000](http://localhost:3000) and see the project⚡
+
+## 🌐 Live Demo
+
+Check out the live demo of Next-Social [here](https://next-social-murex.vercel.app/).
 
 ## ⚠️ Warning 
 
-cause im using the lastest version of next js which is 15 right now for installing some of shadcn ui components and other dependencies you should use --force flag cuase till now no ui library is completely sync with next js 15 so ther is no problem about it and you dont to worry about it at all when you enter npm install in your terminal shadcn authomatically suggests you --force flag so we good🫡✅
+Because I'm using the latest version of Next.js, which is 15 right now, you should use the `--force` flag when installing some Shadcn UI components and other dependencies. No UI library is completely in sync with Next.js 15 yet, so there's no problem, and you don't need to worry about it at all. When you enter `npm install` in your terminal, Shadcn automatically suggests the `--force` flag, so we're good🫡✅.
 
 # End🔚
 
-Hope You like this porject my firend🫂❣️😉
+Hope you like this project, my friend🫂❣️😉
